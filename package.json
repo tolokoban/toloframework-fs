@@ -1,0 +1,30 @@
+{
+  "name": "toloframework-fs",
+  "version": "1.0.0",
+  "description": "A filesystem for the Toloframework.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tolokoban/toloframework-fs.git"
+  },
+  "keywords": [
+    "tfw",
+    "toloframework",
+    "filesystem"
+  ],
+  "author": "Tolokoban",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/tolokoban/toloframework-fs/issues"
+  },
+  "homepage": "https://github.com/tolokoban/toloframework-fs#readme",
+  "devDependencies": {
+    "jasmine": "^2.8.0"
+  },
+  "dependencies": {
+    "promise": "^8.0.1"
+  }
+}
