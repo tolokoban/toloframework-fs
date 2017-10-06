@@ -1,5 +1,23 @@
 var Index = require("../src/index.js");
 
+describe('TEST', function() {
+  it('TEST', function() {
+    try {
+    var fs = new Index({
+      roots: {
+        src: "./tmp"
+      }
+    });
+      fs.mkdir( "src/gfx/background.png" );
+    }
+    catch( ex ) {
+      console.info("[index.spec] ex=", ex);
+      console.info("[index.spec] ex.msg=", ex.msg);
+    }
+  });
+
+});
+
 describe('Constructor', function() {
   describe('should throw exception fs-1', function() {
     it('for empty argument', function() {
