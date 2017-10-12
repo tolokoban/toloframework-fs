@@ -36,8 +36,27 @@ var Index = function( args ) {
  * @param path
  */
 Index.prototype.mkdir = function(path) {
-  var absPath = Private.getAbsPath(this, path);
-  console.info("[index] absPath=", absPath);
+  return new Promise(function (resolve, reject) {
+    try {
+      path = Private.normalizePath( path );
+      var src = path.split('/');
+      var dst = [];
+
+      var next = function( resolve, reject ) {
+        if( src.length === 0 ) {
+          resolve();
+        } else {
+          
+        }
+      };
+      next();
+
+      var absPath = Private.getAbsPath(this, path);
+    }
+    catch( ex ) {
+      reject( ex );
+    }
+  });
 };
 
 
@@ -66,4 +85,3 @@ function throwUsage() {
  * @export Index
  */
 module.exports = Index;
-

@@ -40,15 +40,15 @@ exports.getAbsPath = function( obj, virtualPath ) {
  * attribute.
  * @param  {object} obj._roots  - All  attributes must  be the  string
  * representation if absolute paths.
- * @param   {string}  composedPath   -   Virtual   path  using   POSIX
+ * @param   {string}  relativePath   -   Virtual   path  using   POSIX
  * delimiters. The first part of this path is the root.
  * @return {array}
  * @param {array} [0] - Array of absolute paths for the root.
  * @param {string} [1] - Relative path in the root.
  */
-exports.splitPath = function( obj, composedPath ) {
+exports.splitPath = function( obj, relativePath ) {
   // Cleaning path. Remove all heading "/".
-  composedPath = composedPath.trim();
+  var composedPath = exports.normalizePath( relativePath.trim() );
   while( composedPath.charAt(0) === '/' ) composedPath = composedPath.substr( 1 ).trim();
   
   var slashPos = composedPath.indexOf( "/" );
@@ -60,12 +60,52 @@ exports.splitPath = function( obj, composedPath ) {
   if( !Array.isArray( rootPath ) ) {
     Err(
       Err.UNKNOW_ROOT,
-      "Unknown root \"" + root + "\" in path \"" + composedPath + "\"!"
+      "Unknown root \"" + root + "\" in path \"" + composedPath + "\"!",
+      "\"" + root + "\" is defined as `" + (typeof rootPath) + "` instead of `array`."
     );
   }
   return [rootPath, path];
 };
 
+
+/**
+ * Remove '..' parts of the path and prevent from reaching a point beyond the root.
+ * * `A/../B` becomes `B`.
+ * * `A/./B` becomes `A/B`.
+ * * `../B` throws OUT_OF_BOUNDS exception.
+ * * `A/B/../C/../../../D` throws OUT_OF_BOUNDS exception.
+ */
+exports.normalizePath = function( path ) {
+  if( path.indexOf('\\') != -1 ) {
+    Err(
+      Err.POSIX_EXPECTED,
+      "Backslashes are not allowed in POSIX paths:",
+      path
+    );
+  }
+  
+  var output = [];
+  var input = path.split('/');
+  var item, k;
+  for( k = 0 ; k < input.length ; k++ ) {
+    item = input[k];
+    if( item === '.' ) continue;
+    if( item === '..' ) {
+      if( output.length === 0 ) {
+        Err(
+          Err.OUT_OF_BOUNDS,
+          "This path is out of bounds:",
+          path
+        );
+      }
+      output.pop();
+    } else {
+      output.push( item );
+    }
+  }
+  
+  return output.join( "/" );
+};
 
 /**
  * @export .checkRootsDefinitions

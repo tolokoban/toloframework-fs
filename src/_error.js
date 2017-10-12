@@ -15,7 +15,7 @@
 function fatal( id, messages ) {
   var args = Array.prototype.slice.call(arguments);
   args.shift();
-  var msg = "[toloframework-fs] " + args.join( "\n" );
+  var msg = "[toloframework-fs::" + id + "] " + args.join( "\n" );
 
   throw { id: id, msg: msg };
 }
@@ -25,6 +25,8 @@ fatal.MISSING_ARGUMENT = "fs-1";
 fatal.BAD_ROOT_DEFINITION = "fs-2";
 fatal.DIRECTORY_NOT_FOUND = "fs-3";
 fatal.UNKNOW_ROOT = "fs-4";
+fatal.POSIX_EXPECTED = "fs-5";
+fatal.OUT_OF_BOUNDS = "fs-6";
 
 
 /**
