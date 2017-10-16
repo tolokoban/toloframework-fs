@@ -1,8 +1,6 @@
 "use strict";
 
-var Fs = require("fs");
-var Path = require("path");
-var Promise = require("promise");
+var FS = require("fs");
 
 var Err = require("./_error");
 var Private = require("./_private");
@@ -33,33 +31,34 @@ var Index = function( args ) {
 
 /**
  * @member Index.mkdir
- * @param path
+ * Create a directory and all the missing parents directories.
+ * @param {string} virtualPath - The directory to create.
+ * @return {Promise} `resolve()` and `reject(err)`.
  */
-Index.prototype.mkdir = function(path) {
-  return new Promise(function (resolve, reject) {
-    try {
-      path = Private.normalizePath( path );
-      var src = path.split('/');
-      var dst = [];
+Index.prototype.mkdir = require("./index.mkdir");
 
-      var next = function( resolve, reject ) {
-        if( src.length === 0 ) {
-          resolve();
-        } else {
-          
-        }
-      };
-      next();
-
-      var absPath = Private.getAbsPath(this, path);
-    }
-    catch( ex ) {
-      reject( ex );
-    }
-  });
+/**
+ * @member Index.existsSync
+ * @param {string} virtualPath - Virtual path of the file/directory to
+ * check for existence. For roots with  several real paths, we find in
+ * each path sequentially.
+ */
+Index.prototype.existsSync = function(virtualPath) {
+  var paths = Private.getAllAbsPaths( this, virtualPath );
+  while( paths.length > 0 ) {
+    var path = paths.shift();
+    if( FS.existsSync( path ) ) return true;
+  }
+  return false;
 };
 
-
+/**
+ * @member Index.clear
+ * @param {string} virtualPath - Directory in which you want to delete
+ * all files and subdirectories.
+ * @return {Promise} `resolve()` and `reject(err)`.
+ */
+Index.prototype.clear = require("./index.clear");
 
 /**
  * Throw an exception explaining how to use this class.

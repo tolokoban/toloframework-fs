@@ -27,6 +27,7 @@ fatal.DIRECTORY_NOT_FOUND = "fs-3";
 fatal.UNKNOW_ROOT = "fs-4";
 fatal.POSIX_EXPECTED = "fs-5";
 fatal.OUT_OF_BOUNDS = "fs-6";
+fatal.IO = "fs-7";
 
 
 /**
