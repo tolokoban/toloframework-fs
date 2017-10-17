@@ -32,6 +32,24 @@ exports.getAbsPath = function( obj, virtualPath ) {
 };
 
 /**
+ * @export .getExistingAbsPath
+ * @param  {Index} obj  - An  instance of  Index providing  a `_roots`
+ * attribute.
+ * @param {string} path - Relative path to one of the available roots.
+ * @return If the `virtualPath` maps to  an existing file in the roots
+ * paths, return the absolute path. Otherwise, return `null`.
+ */
+exports.getExistingAbsPath = function( obj, virtualPath ) {
+  var [root, path] = exports.splitPath( obj, virtualPath );
+  var absPath;
+  for( var k = 0 ; k < root.length ; k++ ) {
+    absPath = Path.resolve( root[k], path );
+    if( Fs.existsSync( absPath ) ) return absPath;
+  }
+  return null;
+};
+
+/**
  * @export .splitPath
  * All paths used in this file system are absolute to a root and posix
  * paths. Hence, they must start with a root name. Then, this function
@@ -59,7 +77,7 @@ exports.splitPath = function( obj, relativePath ) {
   var rootPath = obj._roots[root];
   if( !Array.isArray( rootPath ) ) {
     Err(
-      Err.UNKNOW_ROOT,
+      Err.UNKNOWN_ROOT,
       "Unknown root \"" + root + "\" in path \"" + composedPath + "\"!",
       "\"" + root + "\" is defined as `" + (typeof rootPath) + "` instead of `array`."
     );

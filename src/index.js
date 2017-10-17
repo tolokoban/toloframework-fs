@@ -61,6 +61,75 @@ Index.prototype.existsSync = function(virtualPath) {
 Index.prototype.clear = require("./index.clear");
 
 /**
+ * @member Index.readString
+ * @param {string} virtualPath - Path of the file to read.
+ * @param {string} encoding='utf8' - File encoding.
+ * @return {Promise} `resolve(textContent)` and `reject(err)`.
+ */
+Index.prototype.readString = function(virtualPath, encoding) {
+  if( typeof encoding === 'undefined' ) encoding = 'utf8';
+
+  return new Promise(function (resolve, reject) {
+    try {
+      var absPath = Private.getExistingAbsPath( this, virtualPath );
+      if( absPath === null ) throw Err(
+        Err.FILE_NOT_FOUND,
+        "Unable to find `" + virtualPath + "`!"
+      );
+      FS.readFile( absPath, { flag: "r", encoding: encoding }, function( err, data ) {
+        if( err ) {
+          return reject( Err.normalize( err, "This error occurs in readString()." ) );
+        }
+        resolve( data.toString() );
+      });
+    }
+    catch( ex ) {
+      reject( Err.normalize( ex, "This error occurs in readString()." ) );
+    }
+  });
+};
+
+/**
+ * @member Index.writeString
+ * @param {string} virtualPath - Path of the file to write.
+ * @param {string} encoding='utf8' - File encoding.
+ * @return {Promise} `resolve()` and `reject(err)`.
+ */
+Index.prototype.writeString = function(virtualPath, encoding) {
+  var that = this;
+  if( typeof encoding === 'undefined' ) encoding = 'utf8';
+
+  return new Promise(function (resolve, reject) {
+    try {
+      that.mkdir( that.getParent( virtualPath ) );
+      var absPath = Private.getAbsPath( this, virtualPath );
+      FS.readFile( absPath, { flag: "r", encoding: encoding }, function( err, data ) {
+        if( err ) {
+          return reject( Err.normalize( err, "This error occurs in readString()." ) );
+        }
+        resolve( data.toString() );
+      });
+    }
+    catch( ex ) {
+      reject( Err.normalize( ex, "This error occurs in readString()." ) );
+    }
+  });
+};
+
+/**
+ * @member Index.getParent
+ * @param  {string} virtualPath  - The  path  we want  to extract  the
+ * parent from.
+ * @return {string}  Virtual path  of the parent  folder of  a virtual
+ * path.
+ */
+Index.prototype.getParent = function( virtualPath ) {
+  var k = virtualPath.lastIndexOf( "/" );
+  if( k === -1 ) return virtualPath;
+  return virtualPath.substr( 0, k );
+};
+
+/**
  * Throw an exception explaining how to use this class.
  */
 function throwUsage() {

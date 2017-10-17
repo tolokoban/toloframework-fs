@@ -142,13 +142,13 @@ describe('_private', function() {
   });
 
   describe('splitPath', function() {
-    it('should throw UNKNOW_ROOT', function() {
+    it('should throw UNKNOWN_ROOT', function() {
       try {
         Private.splitPath( { _roots: {} }, "src/data" );
         fail("Missing exception!");
       }
       catch( ex ) {
-        expect( ex.id ).toBe( Err.UNKNOW_ROOT );
+        expect( ex.id ).toBe( Err.UNKNOWN_ROOT );
       }
     });
 
